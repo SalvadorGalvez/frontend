@@ -1,21 +1,49 @@
 <div class="container p-4">
-  <div class="d-flex justify-content-around mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="text-center">Lista de tareas</h2>
-    <a class="btn btn-primary d-flex justify-content-center align-items-center" style="gap: 10px;"
-      routerLink="/tareas/formulario"><i class="fa-solid fa-plus"></i> Tarea nueva</a>
+    <a class="btn btn-primary d-flex align-items-center gap-2" routerLink="/tareas/formulario">
+      <i class="fa-solid fa-plus"></i> Tarea nueva
+    </a>
   </div>
-  <div class="table-responsive">
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error }}
+  </div>
+
+  <div class="table-responsive" *ngIf="!loading && !error">
     <table class="table table-bordered">
       <thead>
         <tr>
-          <th scope="col">ID</th>
+          <th scope="col" class="text-center">ID</th>
           <th scope="col">Título</th>
           <th scope="col">Descripción</th>
-          <th scope="col">Estado</th>
-          <th></th>
+          <th scope="col" class="text-center">Estado</th>
+          <th scope="col" class="text-center">Acciones</th>
         </tr>
       </thead>
-      <tbody class="table-group-divider">
+      <tbody>
+        <tr *ngFor="let task of tasks">
+          <td class="text-center">{{ task.id }}</td>
+          <td>{{ task.title }}</td>
+          <td>{{ task.description }}</td>
+          <td class="text-center">
+            <input class="form-check-input" type="checkbox" [checked]="task.status" disabled>
+          </td>
+          <td class="text-center">
+            <a routerLink="/tareas/formulario/{{ task.id }}" class="btn btn-warning me-2" aria-label="Editar">
+              <i class="fa-solid fa-edit"></i>
+            </a>
+            <button type="button" class="btn btn-danger" (click)="delete(task.id)" aria-label="Borrar">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
